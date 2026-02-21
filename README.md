@@ -1,6 +1,9 @@
 # devtools-log-popover
 
-A floating dev tools log popover for React (web) and React Native.
+A floating dev tools log popover for React (web) and React Native. I build this
+tool to be used a a DX improvement for my company. I do not intend on maintaining
+this project fully, and if you'd like to make changes, I'd encourage you to fork it,
+since I likely won't be paying much attention to issues/PRs.
 
 ## Installation
 
@@ -17,18 +20,18 @@ import { devLog, DevTools } from 'devtools-log-popover';
 devLog('User signed in', { userId: 'abc123' }, 'auth');
 
 // Render once near the root of your app
-<DevTools isEnabled={process.env.NODE_ENV === 'development'} title="Logs" />
+<DevTools isEnabled={process.env.NODE_ENV === 'development'} title="Logs" />;
 ```
 
 `devLog` is a no-op outside of `NODE_ENV=development`, so it is safe to leave in production builds.
 
 ### Props
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `isEnabled` | `boolean` | Show the popover. Pass `false` (or omit) to render nothing. |
-| `title` | `string` | Header text. Defaults to `"Logs"`. |
-| `users` | `Record<string, UserEntry>` | Optional map of user IDs to metadata shown in the Users tab. |
+| Prop        | Type                        | Description                                                  |
+| ----------- | --------------------------- | ------------------------------------------------------------ |
+| `isEnabled` | `boolean`                   | Show the popover. Pass `false` (or omit) to render nothing.  |
+| `title`     | `string`                    | Header text. Defaults to `"Logs"`.                           |
+| `users`     | `Record<string, UserEntry>` | Optional map of user IDs to metadata shown in the Users tab. |
 
 ### `devLog` signature
 
