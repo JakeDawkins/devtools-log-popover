@@ -95,3 +95,56 @@ Press `i` for the iOS simulator or `a` for Android. Tap the buttons to generate 
 - The Users tab shows the demo user metadata
 
 > **Note:** If you change library source, run `npm run build` in the project root before restarting the example — Metro and Vite both read from `dist/`.
+
+## Publishing
+
+1. Log in to npm from the CLI
+
+```
+npm login
+```
+
+This opens a browser to authenticate. Run `npm whoami` afterward to confirm you're logged in.
+
+2. Build the package
+
+```
+npm run build
+```
+
+This runs tsup and produces `dist/`. Double-check it's there:
+
+```
+ls dist/
+# index.js index.mjs index.d.ts index.native.js
+```
+
+3. Verify what will be published
+
+```
+npm pack --dry-run
+```
+
+This lists every file that would be included. You should see only `dist/` files plus `package.json`, `README.md`, and `LICENSE`. If anything unexpected shows up (e.g. src/, examples/), add it to `.npmignore`.
+
+4. Publish
+
+```
+npm publish
+```
+
+5. Verify it published
+
+```
+npm view devtools-log-popover
+```
+
+You should see your package metadata. It also appears on `npmjs.com/package/devtools-log-popover` within a minute or two.
+
+6. Before you publish — quick checklist
+
+- [ ] version in `package.json` is correct (0.1.0)
+- [ ] `dist/` is up to date (`npm run build`)
+- [ ] `README.md` exists and looks good
+- [ ] `LICENSE` is present
+- [ ] `npm pack --dry-run` shows no unexpected files
