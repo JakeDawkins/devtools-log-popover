@@ -1,0 +1,94 @@
+# devtools-log-popover
+
+A floating dev tools log popover for React (web) and React Native.
+
+## Installation
+
+```bash
+npm install devtools-log-popover
+```
+
+## Usage
+
+```tsx
+import { devLog, DevTools } from 'devtools-log-popover';
+
+// Call anywhere in your app to add a log entry
+devLog('User signed in', { userId: 'abc123' }, 'auth');
+
+// Render once near the root of your app
+<DevTools isEnabled={process.env.NODE_ENV === 'development'} title="Logs" />
+```
+
+`devLog` is a no-op outside of `NODE_ENV=development`, so it is safe to leave in production builds.
+
+### Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `isEnabled` | `boolean` | Show the popover. Pass `false` (or omit) to render nothing. |
+| `title` | `string` | Header text. Defaults to `"Logs"`. |
+| `users` | `Record<string, UserEntry>` | Optional map of user IDs to metadata shown in the Users tab. |
+
+### `devLog` signature
+
+```ts
+devLog(message: string, data?: unknown, category?: string): void
+```
+
+---
+
+## Development
+
+### Build the library
+
+```bash
+npm run build      # single build
+npm run dev        # watch mode
+```
+
+The compiled output lands in `dist/`. Both example apps depend on `dist/` being present, so run this before starting either example for the first time (or after changing source files).
+
+### Testing with the example apps
+
+Two sample apps live in `examples/` for manual end-to-end testing.
+
+#### React Web (`examples/web`)
+
+Vite + React + TypeScript.
+
+```bash
+cd examples/web
+npm install
+npm run dev
+```
+
+Open the local Vite URL in a browser. Click the buttons on the page to generate log entries across several categories, then open the 🛠 popover in the bottom-right corner to verify:
+
+- Logs appear with correct timestamps and category badges
+- Category filter pills appear and filter correctly
+- Entries with data are expandable
+- Copy-to-clipboard works for individual entries and "Copy all"
+- Clear removes all entries
+- The panel is resizable by dragging the left, top, and top-left edges
+- The Users tab shows the demo user metadata
+
+#### React Native (`examples/native`)
+
+Expo managed workflow.
+
+```bash
+cd examples/native
+npm install
+npx expo start
+```
+
+Press `i` for the iOS simulator or `a` for Android. Tap the buttons to generate log entries, then tap the 🛠 bubble to open the modal and verify:
+
+- Logs appear with correct timestamps and category badges
+- Horizontal filter bar scrolls and filters correctly
+- Entries with data are expandable
+- Clear removes all entries
+- The Users tab shows the demo user metadata
+
+> **Note:** If you change library source, run `npm run build` in the project root before restarting the example — Metro and Vite both read from `dist/`.

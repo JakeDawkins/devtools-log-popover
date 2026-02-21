@@ -324,7 +324,7 @@ function LogRow({
 const s = StyleSheet.create({
   bubble: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 128,
     right: 16,
     width: 40,
     height: 40,
@@ -371,7 +371,7 @@ const s = StyleSheet.create({
     borderTopRightRadius: 12,
     borderWidth: 1,
     borderColor: '#313244',
-    maxHeight: '75%',
+    height: '70%',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
     shadowOpacity: 0.5,

@@ -2,6 +2,23 @@
   "name": "devtools-log-popover",
   "version": "0.1.0",
   "description": "A floating dev tools log popover for React (web) and React Native",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JakeDawkins/devtools-log-popover"
+  },
+  "homepage": "https://github.com/JakeDawkins/devtools-log-popover",
+  "keywords": [
+    "react",
+    "react-native",
+    "devtools",
+    "debug",
+    "logger",
+    "popover",
+    "overlay",
+    "development"
+  ],
+  "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "react-native": "./dist/index.native.js",
@@ -14,7 +31,9 @@
       "require": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch"
@@ -25,8 +44,12 @@
     "react-native": ">=0.72"
   },
   "peerDependenciesMeta": {
-    "react-dom": { "optional": true },
-    "react-native": { "optional": true }
+    "react-dom": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@types/react": "^18",
