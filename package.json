@@ -1,6 +1,6 @@
 {
   "name": "devtools-log-popover",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A floating dev tools log popover for React (web) and React Native",
   "license": "MIT",
   "repository": {
