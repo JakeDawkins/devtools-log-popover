@@ -121,7 +121,7 @@ export default function App() {
         </Section>
       </div>
 
-      <DevTools isEnabled title="Web Example Logs" users={DEMO_USERS} />
+      <DevTools title="Web Example Logs" users={DEMO_USERS} />
     </div>
   );
 }

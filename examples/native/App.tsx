@@ -164,7 +164,7 @@ export default function App() {
 
       {/* Rendered outside SafeAreaView so position:absolute is relative to the
           full screen and the bubble is always on top of all content. */}
-      <DevTools isEnabled title="Native Example Logs" users={DEMO_USERS} />
+      <DevTools title="Native Example Logs" users={DEMO_USERS} />
     </View>
   );
 }

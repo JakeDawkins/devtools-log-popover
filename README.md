@@ -19,19 +19,22 @@ import { devLog, DevTools } from 'devtools-log-popover';
 // Call anywhere in your app to add a log entry
 devLog('User signed in', { userId: 'abc123' }, 'auth');
 
-// Render once near the root of your app
-<DevTools isEnabled={process.env.NODE_ENV === 'development'} title="Logs" />;
+// Render once near the root of your app (wrap in a dev check if needed)
+{process.env.NODE_ENV === 'development' && <DevTools title="Logs" />}
 ```
 
 `devLog` is a no-op outside of `NODE_ENV=development`, so it is safe to leave in production builds.
 
 ### Props
 
-| Prop        | Type                        | Description                                                  |
-| ----------- | --------------------------- | ------------------------------------------------------------ |
-| `isEnabled` | `boolean`                   | Show the popover. Pass `false` (or omit) to render nothing.  |
-| `title`     | `string`                    | Header text. Defaults to `"Logs"`.                           |
-| `users`     | `Record<string, UserEntry>` | Optional map of user IDs to metadata shown in the Users tab. |
+| Prop     | Type                        | Description                                                        |
+| -------- | --------------------------- | ------------------------------------------------------------------ |
+| `title`  | `string`                    | Header text. Defaults to `"Logs"`.                                 |
+| `users`  | `Record<string, UserEntry>` | Optional map of user IDs to metadata shown in the Users tab.       |
+| `top`    | `number`                    | Distance from the top of the screen/viewport. Overrides `bottom`.  |
+| `bottom` | `number`                    | Distance from the bottom (default: `128` native, `16` web).        |
+| `left`   | `number`                    | Distance from the left edge. Overrides `right`.                    |
+| `right`  | `number`                    | Distance from the right edge (default: `16`).                      |
 
 ### `devLog` signature
 

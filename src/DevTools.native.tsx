@@ -20,22 +20,35 @@ import {
 export function DevTools({
   users,
   title,
-  isEnabled,
+  top,
+  bottom,
+  left,
+  right,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
-  isEnabled?: boolean;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 }) {
-  if (!isEnabled) return null;
-  return <DevToolsInner title={title} users={users} />;
+  return <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} />;
 }
 
 function DevToolsInner({
   users,
   title,
+  top,
+  bottom,
+  left,
+  right,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -84,12 +97,21 @@ function DevToolsInner({
   const hasUsers = users && Object.keys(users).length > 0;
   const hasFilterBar = categories.length > 0 || hasUsers;
 
+  const anchoredTop = top !== undefined && bottom === undefined;
+  const anchoredLeft = left !== undefined && right === undefined;
+  const bubblePos = {
+    bottom: anchoredTop ? undefined : (bottom ?? 128),
+    top: anchoredTop ? top : undefined,
+    right: anchoredLeft ? undefined : (right ?? 16),
+    left: anchoredLeft ? left : undefined,
+  };
+
   return (
     <>
       {/* Floating bubble */}
       <TouchableOpacity
         onPress={() => setIsOpen((o) => !o)}
-        style={s.bubble}
+        style={[s.bubble, bubblePos]}
         activeOpacity={0.8}
       >
         <Text style={s.bubbleIcon}>🛠</Text>
@@ -324,8 +346,6 @@ function LogRow({
 const s = StyleSheet.create({
   bubble: {
     position: 'absolute',
-    bottom: 128,
-    right: 16,
     width: 40,
     height: 40,
     borderRadius: 20,

@@ -13,14 +13,19 @@ import {
 export function DevTools({
   users,
   title,
-  isEnabled,
+  top,
+  bottom,
+  left,
+  right,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
-  isEnabled?: boolean;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 }) {
-  if (!isEnabled) return null;
-  return <DevToolsInner title={title} users={users} />;
+  return <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} />;
 }
 
 type ResizeEdge = 'left' | 'top' | 'top-left';
@@ -36,9 +41,17 @@ interface ResizeDrag {
 function DevToolsInner({
   users,
   title,
+  top,
+  bottom,
+  left,
+  right,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
+  top?: number;
+  bottom?: number;
+  left?: number;
+  right?: number;
 }) {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -141,12 +154,33 @@ function DevToolsInner({
 
   if (!mounted) return null;
 
+  // Determine anchor edge: if only top is given (no bottom), anchor top; otherwise anchor bottom.
+  // Same logic for left vs right.
+  const anchoredTop = top !== undefined && bottom === undefined;
+  const anchoredLeft = left !== undefined && right === undefined;
+
+  const containerPos: React.CSSProperties = {
+    bottom: anchoredTop ? undefined : (bottom ?? 16),
+    top: anchoredTop ? top : undefined,
+    right: anchoredLeft ? undefined : (right ?? 16),
+    left: anchoredLeft ? left : undefined,
+  };
+
+  // Panel opens away from the anchor edge
+  const panelPos: React.CSSProperties = {
+    bottom: anchoredTop ? undefined : 56,
+    top: anchoredTop ? 56 : undefined,
+    right: anchoredLeft ? undefined : 0,
+    left: anchoredLeft ? 0 : undefined,
+  };
+
   return (
-    <div style={s.container}>
+    <div style={{ ...s.container, ...containerPos }}>
       {isOpen && (
         <div
           style={{
             ...s.panel,
+            ...panelPos,
             width: size.width,
             height: size.height,
           }}
