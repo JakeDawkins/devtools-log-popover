@@ -15,7 +15,6 @@ export const listeners = new Set<Listener>();
 let idCounter = 0;
 
 export function devLog(message: string, data?: unknown, category?: string) {
-  if (process.env.NODE_ENV !== 'development') return;
   const entry: LogEntry = {
     id: idCounter++,
     timestamp: new Date(),
