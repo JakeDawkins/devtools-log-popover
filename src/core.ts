@@ -26,16 +26,30 @@ export function devLog(message: string, data?: unknown, category?: string) {
   listeners.forEach((l) => l(entry));
 }
 
+export const PRESET_COLORS = {
+  blue: '#89b4fa',
+  green: '#a6e3a1',
+  yellow: '#f9e2af',
+  peach: '#fab387',
+  mauve: '#cba6f7',
+  sky: '#89dceb',
+  red: '#f38ba8',
+  teal: '#94e2d5',
+  pink: '#f5c2e7',
+} as const;
+
+export type PresetColor = keyof typeof PRESET_COLORS;
+
 // Ordered palette for category colors
 export const CATEGORY_COLORS = [
-  '#89b4fa', // blue
-  '#a6e3a1', // green
-  '#f9e2af', // yellow
-  '#fab387', // peach
-  '#cba6f7', // mauve
-  '#89dceb', // sky
-  '#f38ba8', // red
-  '#94e2d5', // teal
+  PRESET_COLORS.blue,
+  PRESET_COLORS.green,
+  PRESET_COLORS.yellow,
+  PRESET_COLORS.peach,
+  PRESET_COLORS.mauve,
+  PRESET_COLORS.sky,
+  PRESET_COLORS.red,
+  PRESET_COLORS.teal,
 ];
 
 export function getCategoryColor(categories: string[], category: string) {

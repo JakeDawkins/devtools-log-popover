@@ -11,6 +11,8 @@ import {
 import {
   listeners,
   getCategoryColor,
+  PRESET_COLORS,
+  type PresetColor,
   type LogEntry,
   type UserEntry,
   type UserMetadata,
@@ -24,6 +26,8 @@ export function DevTools({
   bottom,
   left,
   right,
+  label,
+  buttonColor,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
@@ -31,8 +35,10 @@ export function DevTools({
   bottom?: number;
   left?: number;
   right?: number;
+  label?: string;
+  buttonColor?: PresetColor;
 }) {
-  return <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} />;
+  return <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} label={label} buttonColor={buttonColor} />;
 }
 
 function DevToolsInner({
@@ -42,6 +48,8 @@ function DevToolsInner({
   bottom,
   left,
   right,
+  label,
+  buttonColor,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
@@ -49,6 +57,8 @@ function DevToolsInner({
   bottom?: number;
   left?: number;
   right?: number;
+  label?: string;
+  buttonColor?: PresetColor;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -109,20 +119,23 @@ function DevToolsInner({
   return (
     <>
       {/* Floating bubble */}
-      <TouchableOpacity
-        onPress={() => setIsOpen((o) => !o)}
-        style={[s.bubble, bubblePos]}
-        activeOpacity={0.8}
-      >
-        <Text style={s.bubbleIcon}>🛠</Text>
-        {logs.length > 0 && !isOpen && (
-          <View style={s.badge}>
-            <Text style={s.badgeText}>
-              {logs.length > 99 ? '99+' : logs.length}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
+      <View style={[s.bubbleContainer, bubblePos]}>
+        <TouchableOpacity
+          onPress={() => setIsOpen((o) => !o)}
+          style={[s.bubble, buttonColor ? { backgroundColor: PRESET_COLORS[buttonColor] } : undefined]}
+          activeOpacity={0.8}
+        >
+          <Text style={s.bubbleIcon}>🛠</Text>
+          {logs.length > 0 && !isOpen && (
+            <View style={s.badge}>
+              <Text style={s.badgeText}>
+                {logs.length > 99 ? '99+' : logs.length}
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+        {label && <Text style={s.bubbleLabel}>{label}</Text>}
+      </View>
 
       {/* Panel modal */}
       <Modal
@@ -344,8 +357,18 @@ function LogRow({
 }
 
 const s = StyleSheet.create({
-  bubble: {
+  bubbleContainer: {
     position: 'absolute',
+    alignItems: 'center',
+  },
+  bubbleLabel: {
+    color: '#a6adc8',
+    fontSize: 10,
+    fontFamily: 'monospace',
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  bubble: {
     width: 40,
     height: 40,
     borderRadius: 20,

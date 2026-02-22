@@ -53,6 +53,7 @@
   },
   "devDependencies": {
     "@types/react": "^18",
+    "@types/react-dom": "^18.3.7",
     "@types/react-native": "^0.72",
     "tsup": "^8",
     "typescript": "^5"

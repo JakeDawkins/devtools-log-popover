@@ -1,4 +1,5 @@
-import { devLog, DevTools } from 'devtools-log-popover';
+import { useState } from 'react';
+import { devLog, DevTools, PRESET_COLORS, type PresetColor } from 'devtools-log-popover';
 
 const DEMO_USERS = {
   'user-001': {
@@ -11,6 +12,9 @@ const DEMO_USERS = {
 };
 
 export default function App() {
+  const [buttonColor, setButtonColor] = useState<PresetColor | undefined>(undefined);
+  const [label, setLabel] = useState('');
+
   return (
     <div style={s.page}>
       <div style={s.card}>
@@ -119,9 +123,52 @@ export default function App() {
             />
           </Row>
         </Section>
+
+        <Section label="DevTools button">
+          <div style={s.configRow}>
+            <span style={s.configLabel}>Color</span>
+            <div style={s.swatches}>
+              <button
+                style={{
+                  ...s.swatch,
+                  background: 'transparent',
+                  border: buttonColor === undefined ? '2px solid #cdd6f4' : '2px solid #45475a',
+                  color: '#6c7086',
+                }}
+                onClick={() => setButtonColor(undefined)}
+                title="Default"
+              >
+                –
+              </button>
+              {(Object.entries(PRESET_COLORS) as [PresetColor, string][]).map(([name, hex]) => (
+                <button
+                  key={name}
+                  style={{
+                    ...s.swatch,
+                    background: hex,
+                    border: buttonColor === name ? '2px solid #cdd6f4' : '2px solid transparent',
+                  }}
+                  onClick={() => setButtonColor(name)}
+                  title={name}
+                />
+              ))}
+            </div>
+          </div>
+          <div style={s.configRow}>
+            <span style={s.configLabel}>Label</span>
+            <input
+              style={s.input}
+              type="text"
+              value={label}
+              onChange={(e) => setLabel(e.target.value)}
+              placeholder="e.g. staging"
+              maxLength={20}
+            />
+          </div>
+        </Section>
       </div>
 
-      <DevTools title="Web Example Logs" users={DEMO_USERS} />
+      <DevTools title="Web Example Logs" users={DEMO_USERS} buttonColor={buttonColor} label={label || undefined} />
     </div>
   );
 }
@@ -216,5 +263,45 @@ const s: Record<string, React.CSSProperties> = {
     cursor: 'pointer',
     fontFamily: 'monospace',
     transition: 'background 0.12s',
+  },
+  configRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 10,
+  },
+  configLabel: {
+    fontSize: 11,
+    color: '#6c7086',
+    fontFamily: 'monospace',
+    width: 36,
+    flexShrink: 0,
+  },
+  swatches: {
+    display: 'flex',
+    gap: 6,
+    flexWrap: 'wrap' as const,
+  },
+  swatch: {
+    width: 20,
+    height: 20,
+    borderRadius: '50%',
+    cursor: 'pointer',
+    padding: 0,
+    fontSize: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    background: 'transparent',
+    border: '1px solid #45475a',
+    borderRadius: 4,
+    padding: '4px 8px',
+    fontSize: 12,
+    color: '#cdd6f4',
+    fontFamily: 'monospace',
+    outline: 'none',
+    width: 160,
   },
 };

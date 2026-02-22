@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   listeners,
   getCategoryColor,
   formatLogsAsMarkdown,
   formatEntryAsMarkdown,
+  PRESET_COLORS,
+  type PresetColor,
   type LogEntry,
   type UserEntry,
   type UserMetadata,
@@ -17,6 +20,8 @@ export function DevTools({
   bottom,
   left,
   right,
+  label,
+  buttonColor,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
@@ -24,8 +29,28 @@ export function DevTools({
   bottom?: number;
   left?: number;
   right?: number;
+  label?: string;
+  buttonColor?: PresetColor;
 }) {
-  return <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} />;
+  const [container] = useState<HTMLDivElement | null>(() => {
+    if (typeof document === 'undefined') return null;
+    return document.createElement('div');
+  });
+
+  useEffect(() => {
+    if (!container) return;
+    document.body.appendChild(container);
+    return () => {
+      document.body.removeChild(container);
+    };
+  }, [container]);
+
+  if (!container) return null;
+
+  return createPortal(
+    <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} label={label} buttonColor={buttonColor} />,
+    container,
+  );
 }
 
 type ResizeEdge = 'left' | 'top' | 'top-left';
@@ -45,6 +70,8 @@ function DevToolsInner({
   bottom,
   left,
   right,
+  label,
+  buttonColor,
 }: {
   users?: Record<string, UserEntry>;
   title?: string;
@@ -52,6 +79,8 @@ function DevToolsInner({
   bottom?: number;
   left?: number;
   right?: number;
+  label?: string;
+  buttonColor?: PresetColor;
 }) {
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -285,16 +314,32 @@ function DevToolsInner({
       )}
 
       {/* Floating bubble */}
-      <button
-        onClick={() => setIsOpen((o) => !o)}
-        title="Dev Tools"
-        style={{ ...s.bubble, background: isOpen ? '#313244' : '#1e1e2e' }}
-      >
-        🛠
-        {logs.length > 0 && !isOpen && (
-          <span style={s.badge}>{logs.length > 99 ? '99+' : logs.length}</span>
+      <div style={s.bubbleWrapper}>
+        <button
+          onClick={() => setIsOpen((o) => !o)}
+          title="Dev Tools"
+          style={{ ...s.bubble, background: buttonColor ? PRESET_COLORS[buttonColor] : (isOpen ? '#313244' : '#1e1e2e') }}
+        >
+          🛠
+          {logs.length > 0 && !isOpen && (
+            <span style={s.badge}>{logs.length > 99 ? '99+' : logs.length}</span>
+          )}
+        </button>
+        {label && (
+          <button
+            onClick={() => setIsOpen((o) => !o)}
+            title="Dev Tools"
+            style={{
+              ...s.bubbleLabel,
+              background: '#1e1e2e',
+              border: `1px solid ${buttonColor ? PRESET_COLORS[buttonColor] : '#45475a'}`,
+              color: buttonColor ? PRESET_COLORS[buttonColor] : '#cdd6f4',
+            }}
+          >
+            {label}
+          </button>
         )}
-      </button>
+      </div>
     </div>
   );
 }
@@ -582,6 +627,11 @@ const s: Record<string, React.CSSProperties> = {
   emptyCode: {
     color: '#89b4fa',
   },
+  bubbleWrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
   bubble: {
     width: 40,
     height: 40,
@@ -596,6 +646,21 @@ const s: Record<string, React.CSSProperties> = {
     boxShadow: '0 4px 16px rgba(0,0,0,0.4)',
     transition: 'background 0.15s',
     position: 'relative',
+    zIndex: 0,
+  },
+  bubbleLabel: {
+    fontSize: 9,
+    fontWeight: 700,
+    fontFamily: 'monospace',
+    textAlign: 'center',
+    whiteSpace: 'nowrap',
+    borderRadius: 8,
+    padding: '1px 6px',
+    cursor: 'pointer',
+    marginTop: -7,
+    position: 'relative',
+    zIndex: 1,
+    letterSpacing: '0.04em',
   },
   badge: {
     position: 'absolute',
