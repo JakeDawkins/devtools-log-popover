@@ -49,7 +49,16 @@ export function DevTools({
   if (!container) return null;
 
   return createPortal(
-    <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} label={label} buttonColor={buttonColor} />,
+    <DevToolsInner
+      title={title}
+      users={users}
+      top={top}
+      bottom={bottom}
+      left={left}
+      right={right}
+      label={label}
+      buttonColor={buttonColor}
+    />,
     container,
   );
 }
@@ -205,7 +214,7 @@ function DevToolsInner({
   };
 
   return (
-    <div style={{ ...s.container, ...containerPos }}>
+    <div className="rr-block" style={{ ...s.container, ...containerPos }}>
       {isOpen && (
         <div
           style={{
@@ -319,11 +328,20 @@ function DevToolsInner({
         <button
           onClick={() => setIsOpen((o) => !o)}
           title="Dev Tools"
-          style={{ ...s.bubble, background: buttonColor ? PRESET_COLORS[buttonColor] : (isOpen ? '#313244' : '#1e1e2e') }}
+          style={{
+            ...s.bubble,
+            background: buttonColor
+              ? PRESET_COLORS[buttonColor]
+              : isOpen
+                ? '#313244'
+                : '#1e1e2e',
+          }}
         >
           🛠
           {logs.length > 0 && !isOpen && (
-            <span style={s.badge}>{logs.length > 99 ? '99+' : logs.length}</span>
+            <span style={s.badge}>
+              {logs.length > 99 ? '99+' : logs.length}
+            </span>
           )}
         </button>
         {label && (

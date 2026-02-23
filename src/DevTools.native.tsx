@@ -39,7 +39,18 @@ export function DevTools({
   label?: string;
   buttonColor?: PresetColor;
 }) {
-  return <DevToolsInner title={title} users={users} top={top} bottom={bottom} left={left} right={right} label={label} buttonColor={buttonColor} />;
+  return (
+    <DevToolsInner
+      title={title}
+      users={users}
+      top={top}
+      bottom={bottom}
+      left={left}
+      right={right}
+      label={label}
+      buttonColor={buttonColor}
+    />
+  );
 }
 
 function DevToolsInner({
@@ -123,7 +134,12 @@ function DevToolsInner({
       <View style={[s.bubbleContainer, bubblePos]}>
         <TouchableOpacity
           onPress={() => setIsOpen((o) => !o)}
-          style={[s.bubble, buttonColor ? { backgroundColor: PRESET_COLORS[buttonColor] } : undefined]}
+          style={[
+            s.bubble,
+            buttonColor
+              ? { backgroundColor: PRESET_COLORS[buttonColor] }
+              : undefined,
+          ]}
           activeOpacity={0.8}
         >
           <Text style={s.bubbleIcon}>🛠</Text>
