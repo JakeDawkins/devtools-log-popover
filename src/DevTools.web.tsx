@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import {
   listeners,
+  addListener,
   getCategoryColor,
   formatLogsAsMarkdown,
   formatEntryAsMarkdown,
@@ -97,7 +98,7 @@ function DevToolsInner({
     const listener: Listener = (entry) => {
       setLogs((prev) => [...prev, entry]);
     };
-    listeners.add(listener);
+    addListener(listener);
     return () => {
       listeners.delete(listener);
     };

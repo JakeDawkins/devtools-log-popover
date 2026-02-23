@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {
   listeners,
+  addListener,
   getCategoryColor,
   PRESET_COLORS,
   type PresetColor,
@@ -70,7 +71,7 @@ function DevToolsInner({
     const listener: Listener = (entry) => {
       setLogs((prev) => [...prev, entry]);
     };
-    listeners.add(listener);
+    addListener(listener);
     return () => {
       listeners.delete(listener);
     };

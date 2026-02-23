@@ -12,6 +12,7 @@ export type UserEntry = { link?: string; metadata: UserMetadata };
 export type Listener = (entry: LogEntry) => void;
 
 export const listeners = new Set<Listener>();
+const earlyBuffer: LogEntry[] = [];
 let idCounter = 0;
 
 export function devLog(message: string, data?: unknown, category?: string) {
@@ -22,7 +23,19 @@ export function devLog(message: string, data?: unknown, category?: string) {
     data,
     category,
   };
-  listeners.forEach((l) => l(entry));
+  if (listeners.size === 0) {
+    earlyBuffer.push(entry);
+  } else {
+    listeners.forEach((l) => l(entry));
+  }
+}
+
+export function addListener(listener: Listener): void {
+  if (earlyBuffer.length > 0) {
+    earlyBuffer.forEach((entry) => listener(entry));
+    earlyBuffer.length = 0;
+  }
+  listeners.add(listener);
 }
 
 export const PRESET_COLORS = {
