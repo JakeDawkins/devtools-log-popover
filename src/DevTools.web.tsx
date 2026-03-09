@@ -438,8 +438,8 @@ function UserRow({
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div onClick={() => setExpanded((e) => !e)} style={s.row}>
-      <div style={s.rowHeader}>
+    <div style={s.row}>
+      <div onClick={() => setExpanded((e) => !e)} style={{ ...s.rowHeader, cursor: 'pointer' }}>
         <span style={s.userBadge}>user</span>
         <span style={s.rowMessage}>{userId}</span>
         {link && (
@@ -477,11 +477,11 @@ function LogRow({
   const time = entry.timestamp.toLocaleTimeString('en-US', { hour12: false });
 
   return (
-    <div
-      onClick={hasData ? () => setExpanded((e) => !e) : undefined}
-      style={{ ...s.row, cursor: hasData ? 'pointer' : 'default' }}
-    >
-      <div style={{ ...s.rowHeader, alignItems: 'baseline' }}>
+    <div style={s.row}>
+      <div
+        onClick={hasData ? () => setExpanded((e) => !e) : undefined}
+        style={{ ...s.rowHeader, alignItems: 'baseline', cursor: hasData ? 'pointer' : 'default' }}
+      >
         <span style={s.rowTime}>{time}</span>
         {entry.category && categoryColor && (
           <span

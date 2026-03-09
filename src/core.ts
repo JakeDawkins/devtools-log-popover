@@ -94,12 +94,12 @@ export function formatValueAsBullets(value: unknown, indent: string): string {
 
 export function formatEntryAsMarkdown(entry: LogEntry): string {
   const label = entry.category
-    ? `**[${entry.category}]** \`${entry.message}\``
-    : `\`${entry.message}\``;
-  if (entry.data === undefined) return `- ${label}`;
-  return `- ${label}\n${formatValueAsBullets(entry.data, '    ')}`;
+    ? `[${entry.category}] ${entry.message}`
+    : entry.message;
+  if (entry.data === undefined) return label;
+  return `${label}\n${JSON.stringify(entry.data, null, 2)}`;
 }
 
 export function formatLogsAsMarkdown(entries: LogEntry[]): string {
-  return entries.map(formatEntryAsMarkdown).join('\n');
+  return entries.map(formatEntryAsMarkdown).join('\n\n');
 }

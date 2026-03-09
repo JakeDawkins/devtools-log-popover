@@ -306,32 +306,30 @@ function UserRow({
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <TouchableOpacity
-      onPress={() => setExpanded((e) => !e)}
-      style={s.row}
-      activeOpacity={0.7}
-    >
-      <View style={s.rowHeader}>
-        <View style={s.userBadge}>
-          <Text style={s.userBadgeText}>user</Text>
+    <View style={s.row}>
+      <TouchableOpacity onPress={() => setExpanded((e) => !e)} activeOpacity={0.7}>
+        <View style={s.rowHeader}>
+          <View style={s.userBadge}>
+            <Text style={s.userBadgeText}>user</Text>
+          </View>
+          <Text style={s.rowMessage} numberOfLines={1}>
+            {userId}
+          </Text>
+          {link && (
+            <TouchableOpacity
+              onPress={() => Linking.openURL(link)}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+              <Text style={s.rowLink}>↗</Text>
+            </TouchableOpacity>
+          )}
+          <Text style={s.rowChevron}>{expanded ? '▲' : '▼'}</Text>
         </View>
-        <Text style={s.rowMessage} numberOfLines={1}>
-          {userId}
-        </Text>
-        {link && (
-          <TouchableOpacity
-            onPress={() => Linking.openURL(link)}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Text style={s.rowLink}>↗</Text>
-          </TouchableOpacity>
-        )}
-        <Text style={s.rowChevron}>{expanded ? '▲' : '▼'}</Text>
-      </View>
+      </TouchableOpacity>
       {expanded && (
         <Text style={s.pre}>{JSON.stringify(metadata, null, 2)}</Text>
       )}
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -347,29 +345,30 @@ function LogRow({
   const time = entry.timestamp.toLocaleTimeString('en-US', { hour12: false });
 
   return (
-    <TouchableOpacity
-      onPress={hasData ? () => setExpanded((e) => !e) : undefined}
-      activeOpacity={hasData ? 0.7 : 1}
-      style={s.row}
-    >
-      <View style={s.rowHeader}>
-        <Text style={s.rowTime}>{time}</Text>
-        {entry.category && categoryColor && (
-          <View style={[s.categoryBadge, { borderColor: categoryColor }]}>
-            <Text style={[s.categoryBadgeText, { color: categoryColor }]}>
-              {entry.category}
-            </Text>
-          </View>
-        )}
-        <Text style={s.rowMessage} numberOfLines={expanded ? undefined : 2}>
-          {entry.message}
-        </Text>
-        {hasData && <Text style={s.rowChevron}>{expanded ? '▲' : '▼'}</Text>}
-      </View>
+    <View style={s.row}>
+      <TouchableOpacity
+        onPress={hasData ? () => setExpanded((e) => !e) : undefined}
+        activeOpacity={hasData ? 0.7 : 1}
+      >
+        <View style={s.rowHeader}>
+          <Text style={s.rowTime}>{time}</Text>
+          {entry.category && categoryColor && (
+            <View style={[s.categoryBadge, { borderColor: categoryColor }]}>
+              <Text style={[s.categoryBadgeText, { color: categoryColor }]}>
+                {entry.category}
+              </Text>
+            </View>
+          )}
+          <Text style={s.rowMessage} numberOfLines={expanded ? undefined : 2}>
+            {entry.message}
+          </Text>
+          {hasData && <Text style={s.rowChevron}>{expanded ? '▲' : '▼'}</Text>}
+        </View>
+      </TouchableOpacity>
       {expanded && hasData && (
         <Text style={s.pre}>{JSON.stringify(entry.data, null, 2)}</Text>
       )}
-    </TouchableOpacity>
+    </View>
   );
 }
 
