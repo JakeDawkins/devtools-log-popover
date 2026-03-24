@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   ScrollView,
   Modal,
@@ -12,6 +13,7 @@ import {
   listeners,
   addListener,
   getCategoryColor,
+  filterLogs,
   PRESET_COLORS,
   type PresetColor,
   type LogEntry,
@@ -76,6 +78,7 @@ function DevToolsInner({
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showUsers, setShowUsers] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
@@ -112,9 +115,7 @@ function DevToolsInner({
     }
   }, [categories, activeCategory]);
 
-  const visibleLogs = activeCategory
-    ? logs.filter((e) => e.category === activeCategory)
-    : logs;
+  const visibleLogs = filterLogs(logs, activeCategory, searchQuery);
 
   const hasUsers = users && Object.keys(users).length > 0;
   const hasFilterBar = categories.length > 0 || hasUsers;
@@ -225,6 +226,29 @@ function DevToolsInner({
               </ScrollView>
             )}
 
+            {/* Search filter */}
+            {!showUsers && (
+              <View style={s.searchBar}>
+                <TextInput
+                  placeholder="Filter logs..."
+                  placeholderTextColor="#6c7086"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  style={s.searchInput}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+                {searchQuery.length > 0 && (
+                  <TouchableOpacity
+                    onPress={() => setSearchQuery('')}
+                    style={s.searchClear}
+                  >
+                    <Text style={s.searchClearText}>✕</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
+
             {/* Content */}
             <ScrollView ref={scrollRef} style={s.content}>
               {showUsers ? (
@@ -243,7 +267,11 @@ function DevToolsInner({
                   No logs yet. Call devLog() to add entries.
                 </Text>
               ) : visibleLogs.length === 0 ? (
-                <Text style={s.emptyText}>No logs in this category.</Text>
+                <Text style={s.emptyText}>
+                  {searchQuery
+                    ? 'No logs match your search.'
+                    : 'No logs in this category.'}
+                </Text>
               ) : (
                 visibleLogs.map((entry) => (
                   <LogRow
@@ -505,6 +533,37 @@ const s = StyleSheet.create({
     fontSize: 10,
     fontWeight: '600',
     fontFamily: 'monospace',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#313244',
+    backgroundColor: '#181825',
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: '#1e1e2e',
+    borderWidth: 1,
+    borderColor: '#45475a',
+    borderRadius: 4,
+    color: '#cdd6f4',
+    fontSize: 11,
+    fontFamily: 'monospace',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  searchClear: {
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    marginLeft: 4,
+  },
+  searchClearText: {
+    color: '#6c7086',
+    fontSize: 12,
+    lineHeight: 16,
   },
   content: {
     flex: 1,
