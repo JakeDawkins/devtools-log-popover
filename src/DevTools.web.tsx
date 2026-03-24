@@ -97,6 +97,7 @@ function DevToolsInner({
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [showUsers, setShowUsers] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [size, setSize] = useState({ width: 360, height: 320 });
   const logsEndRef = useRef<HTMLDivElement>(null);
   const resizeDrag = useRef<ResizeDrag | null>(null);
@@ -185,9 +186,19 @@ function DevToolsInner({
     }
   }, [categories, activeCategory]);
 
-  const visibleLogs = activeCategory
+  const filteredByCategory = activeCategory
     ? logs.filter((e) => e.category === activeCategory)
     : logs;
+
+  const visibleLogs = searchQuery
+    ? filteredByCategory.filter((e) => {
+        const q = searchQuery.toLowerCase();
+        return (
+          e.message.toLowerCase().includes(q) ||
+          (e.category?.toLowerCase().includes(q) ?? false)
+        );
+      })
+    : filteredByCategory;
 
   const hasUsers = users && Object.keys(users).length > 0;
 
@@ -285,6 +296,28 @@ function DevToolsInner({
             </div>
           )}
 
+          {/* Search filter */}
+          {!showUsers && (
+            <div style={s.searchBar}>
+              <input
+                type="text"
+                placeholder="Filter logs..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                style={s.searchInput}
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  style={s.searchClear}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Content */}
           <div style={s.content}>
             {showUsers ? (
@@ -304,7 +337,11 @@ function DevToolsInner({
                 add entries.
               </div>
             ) : visibleLogs.length === 0 ? (
-              <div style={s.emptyText}>No logs in this category.</div>
+              <div style={s.emptyText}>
+                {searchQuery
+                  ? 'No logs match your search.'
+                  : 'No logs in this category.'}
+              </div>
             ) : (
               visibleLogs.map((entry) => (
                 <LogRow
@@ -631,6 +668,35 @@ const s: Record<string, React.CSSProperties> = {
     background: '#181825',
     flexShrink: 0,
     flexWrap: 'wrap',
+  },
+  searchBar: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '4px 10px',
+    borderBottom: '1px solid #313244',
+    background: '#181825',
+    flexShrink: 0,
+  },
+  searchInput: {
+    flex: 1,
+    background: '#1e1e2e',
+    border: '1px solid #45475a',
+    borderRadius: 4,
+    color: '#cdd6f4',
+    fontSize: 11,
+    fontFamily: 'monospace',
+    padding: '3px 8px',
+    outline: 'none',
+  },
+  searchClear: {
+    background: 'none',
+    border: 'none',
+    color: '#6c7086',
+    fontSize: 12,
+    cursor: 'pointer',
+    padding: '2px 4px',
+    marginLeft: 4,
+    lineHeight: 1,
   },
   content: {
     flex: 1,
