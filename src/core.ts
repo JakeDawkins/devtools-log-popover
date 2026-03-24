@@ -103,3 +103,22 @@ export function formatEntryAsMarkdown(entry: LogEntry): string {
 export function formatLogsAsMarkdown(entries: LogEntry[]): string {
   return entries.map(formatEntryAsMarkdown).join('\n\n');
 }
+
+export function filterLogs(
+  logs: LogEntry[],
+  activeCategory: string | null,
+  searchQuery: string,
+): LogEntry[] {
+  const byCategory = activeCategory
+    ? logs.filter((e) => e.category === activeCategory)
+    : logs;
+
+  if (!searchQuery) return byCategory;
+
+  const q = searchQuery.toLowerCase();
+  return byCategory.filter(
+    (e) =>
+      e.message.toLowerCase().includes(q) ||
+      (e.category?.toLowerCase().includes(q) ?? false),
+  );
+}

@@ -13,6 +13,7 @@ import {
   listeners,
   addListener,
   getCategoryColor,
+  filterLogs,
   PRESET_COLORS,
   type PresetColor,
   type LogEntry,
@@ -114,19 +115,7 @@ function DevToolsInner({
     }
   }, [categories, activeCategory]);
 
-  const filteredByCategory = activeCategory
-    ? logs.filter((e) => e.category === activeCategory)
-    : logs;
-
-  const visibleLogs = searchQuery
-    ? filteredByCategory.filter((e) => {
-        const q = searchQuery.toLowerCase();
-        return (
-          e.message.toLowerCase().includes(q) ||
-          (e.category?.toLowerCase().includes(q) ?? false)
-        );
-      })
-    : filteredByCategory;
+  const visibleLogs = filterLogs(logs, activeCategory, searchQuery);
 
   const hasUsers = users && Object.keys(users).length > 0;
   const hasFilterBar = categories.length > 0 || hasUsers;

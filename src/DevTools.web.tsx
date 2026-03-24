@@ -4,6 +4,7 @@ import {
   listeners,
   addListener,
   getCategoryColor,
+  filterLogs,
   formatLogsAsMarkdown,
   formatEntryAsMarkdown,
   PRESET_COLORS,
@@ -186,19 +187,7 @@ function DevToolsInner({
     }
   }, [categories, activeCategory]);
 
-  const filteredByCategory = activeCategory
-    ? logs.filter((e) => e.category === activeCategory)
-    : logs;
-
-  const visibleLogs = searchQuery
-    ? filteredByCategory.filter((e) => {
-        const q = searchQuery.toLowerCase();
-        return (
-          e.message.toLowerCase().includes(q) ||
-          (e.category?.toLowerCase().includes(q) ?? false)
-        );
-      })
-    : filteredByCategory;
+  const visibleLogs = filterLogs(logs, activeCategory, searchQuery);
 
   const hasUsers = users && Object.keys(users).length > 0;
 
